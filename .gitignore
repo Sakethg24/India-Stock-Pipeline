@@ -1,0 +1,22 @@
+# Environment variables — NEVER commit this
+.env
+
+# dbt compiled files
+stock_transform/target/
+stock_transform/dbt_packages/
+stock_transform/logs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

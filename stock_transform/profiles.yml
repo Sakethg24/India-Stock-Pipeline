@@ -1,0 +1,21 @@
+# profiles.yml
+#
+# This file tells dbt HOW to connect to your database.
+# It should live at: ~/.dbt/profiles.yml  (in your home directory)
+# OR you can keep it in the project and run: dbt run --profiles-dir .
+#
+# IMPORTANT: Never commit this file with real passwords to GitHub.
+# Use environment variables (the "env_var" function below reads from .env).
+
+stock_transform:
+  target: dev             # which "target" to use by default
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      port: 5433
+      user: "{{ env_var('POSTGRES_USER', 'admin') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'stock_raw') }}"
+      schema: public        # dbt uses this as the base schema
+      threads: 4            # how many models to run in parallel

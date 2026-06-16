@@ -1,0 +1,46 @@
+# dbt_project.yml
+#
+# This is the main configuration file for our dbt project.
+# dbt uses this to know where to find models, how to name schemas, etc.
+#
+# WHAT IS dbt?
+# dbt (data build tool) lets you write transformations as SQL SELECT statements.
+# You write: "SELECT ... FROM raw_companies WHERE ..."
+# dbt wraps it in: CREATE TABLE AS SELECT ... (or CREATE VIEW AS ...)
+# It also handles dependencies, testing, and documentation automatically.
+
+name: stock_transform
+version: "1.0.0"
+
+# The dbt profile to use for database connection.
+# This refers to the profile name in ~/.dbt/profiles.yml
+profile: stock_transform
+
+# Where dbt looks for SQL model files
+model-paths: ["models"]
+
+# Where dbt looks for test files
+test-paths: ["tests"]
+
+# Where dbt generates documentation
+analysis-paths: ["analyses"]
+
+# Where compiled SQL goes (don't edit these)
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# Model configuration by folder
+# This controls what kind of database object each model creates
+models:
+  stock_transform:
+    staging:
+      # staging models are VIEWS — they don't store data, just transform on the fly
+      # This keeps the staging layer lightweight
+      +materialized: view
+      +schema: staging        # writes to warehouse_staging schema
+
+    marts:
+      # mart models are TABLES — data is physically stored for fast querying
+      # Dashboards and analysts query these
+      +materialized: table
+      +schema: warehouse      # writes to warehouse schema

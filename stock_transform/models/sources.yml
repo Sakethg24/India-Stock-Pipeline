@@ -1,0 +1,45 @@
+# sources.yml
+#
+# This file tells dbt WHERE the raw data lives.
+# When you write {{ source('raw', 'raw_candles') }} in a SQL model,
+# dbt looks here to find the actual table name and schema.
+#
+# Benefits:
+#   - If a table is renamed, you update it in ONE place (here), not everywhere
+#   - dbt tracks data lineage from source tables through all transformations
+#   - You can add freshness tests: alert if raw_candles hasn't been updated recently
+
+version: 2
+
+sources:
+  - name: raw
+    schema: public        # the PostgreSQL schema where raw tables live
+    description: "Raw layer — data loaded directly from yfinance and RSS feeds"
+
+    tables:
+      - name: raw_companies
+        description: "Nifty 50 company list with sector and exchange info"
+        columns:
+          - name: ticker
+            description: "Yahoo Finance ticker symbol (e.g. RELIANCE.NS)"
+            tests:
+              - unique
+              - not_null
+
+      - name: raw_candles
+        description: "Daily OHLC price data per stock"
+        columns:
+          - name: ticker
+            tests: [not_null]
+          - name: trade_date
+            tests: [not_null]
+          - name: close
+            tests: [not_null]
+
+      - name: raw_news
+        description: "News articles from Economic Times RSS"
+        columns:
+          - name: url
+            tests:
+              - unique
+              - not_null

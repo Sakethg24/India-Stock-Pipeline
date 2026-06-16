@@ -1,0 +1,72 @@
+# schema.yml
+#
+# This file documents our dbt models and defines data quality tests.
+# dbt test will run all tests defined here against the actual data in your DB.
+#
+# TYPES OF TESTS:
+#   - unique       : no duplicate values in this column
+#   - not_null     : column has no NULL values
+#   - accepted_values: column only contains values from a given list
+#   - relationships: foreign key integrity check
+
+version: 2
+
+models:
+
+  # ── STAGING MODELS ──────────────────────────────────────────
+  - name: stg_companies
+    description: "Cleaned Nifty 50 company list from raw_companies"
+    columns:
+      - name: ticker
+        tests: [unique, not_null]
+      - name: exchange
+        tests:
+          - accepted_values:
+              values: ["NSE", "BSE"]
+
+  - name: stg_candles
+    description: "Cleaned OHLC price data — non-trading days filtered out"
+    columns:
+      - name: ticker
+        tests: [not_null]
+      - name: trade_date
+        tests: [not_null]
+      - name: close
+        tests: [not_null]
+
+  - name: stg_news
+    description: "Cleaned news articles with non-empty titles and URLs"
+    columns:
+      - name: url
+        tests: [unique, not_null]
+
+  # ── MART MODELS ─────────────────────────────────────────────
+  - name: dim_companies
+    description: "Company dimension — one row per stock ticker"
+    columns:
+      - name: company_id
+        tests: [unique, not_null]
+
+  - name: dim_times
+    description: "Date dimension — one row per trading date"
+    columns:
+      - name: date_id
+        tests: [unique, not_null]
+      - name: financial_quarter
+        tests:
+          - accepted_values:
+              values: ["Q1", "Q2", "Q3", "Q4"]
+
+  - name: fact_candles
+    description: "Core fact table — daily stock prices with derived metrics"
+    columns:
+      - name: company_id
+        tests: [not_null]
+      - name: date_id
+        tests: [not_null]
+
+  - name: fact_news
+    description: "News articles enriched with time dimension attributes"
+    columns:
+      - name: news_id
+        tests: [unique, not_null]
