@@ -21,11 +21,16 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pipeline
+      - name: Debug connection
+        env:
+          POSTGRES_HOST: ${{ secrets.SUPABASE_HOST }}
+        run: echo "Connecting to $POSTGRES_HOST"
+
+      - name: Run cloud pipeline
         env:
           POSTGRES_HOST: ${{ secrets.SUPABASE_HOST }}
           POSTGRES_PORT: ${{ secrets.SUPABASE_PORT }}
           POSTGRES_DB: ${{ secrets.SUPABASE_DB }}
           POSTGRES_USER: ${{ secrets.SUPABASE_USER }}
           POSTGRES_PASSWORD: ${{ secrets.SUPABASE_PASSWORD }}
-        run: python main.py
+        run: python main_cloud.py
