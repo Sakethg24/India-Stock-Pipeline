@@ -7,3 +7,4 @@ beautifulsoup4==4.12.3
 lxml==5.2.2
 dbt-postgres==1.8.0
 SQLAlchemy==2.0.30
+alpaca-py

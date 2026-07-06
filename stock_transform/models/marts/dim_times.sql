@@ -16,7 +16,7 @@
 WITH all_dates AS (
     -- Get every unique trading date from our candles data
     SELECT DISTINCT trade_date AS date_id
-    FROM {{ source('raw', 'raw_candles') }}
+    FROM {{ ref('stg_candles') }}
     WHERE trade_date IS NOT NULL
 )
 

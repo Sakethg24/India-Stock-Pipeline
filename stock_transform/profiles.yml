@@ -13,9 +13,19 @@ stock_transform:
     dev:
       type: postgres
       host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
-      port: 5433
+      port: "{{ env_var('POSTGRES_PORT', '5433') | int }}"
       user: "{{ env_var('POSTGRES_USER', 'admin') }}"
       password: "{{ env_var('POSTGRES_PASSWORD') }}"
       dbname: "{{ env_var('POSTGRES_DB', 'stock_raw') }}"
-      schema: public        # dbt uses this as the base schema
-      threads: 4            # how many models to run in parallel
+      schema: public
+      threads: 4
+
+    prod:
+      type: postgres
+      host: "{{ env_var('SUPABASE_HOST') }}"
+      port: "{{ env_var('SUPABASE_PORT', '5432') | int }}"
+      user: "{{ env_var('SUPABASE_USER') }}"
+      password: "{{ env_var('SUPABASE_PASSWORD') }}"
+      dbname: "{{ env_var('SUPABASE_DB', 'postgres') }}"
+      schema: public
+      threads: 4
